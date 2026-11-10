@@ -32,16 +32,16 @@ jobs:
         env:
           THEOS: /Users/runner/theos
         run: |
-          # パッケージ化(make package)ではなく、コンパイルのみ(make)を実行して余計な自動署名を避ける
+          # パッケージ化(make package)を行わず、Makefileで指定したarm64のみでコンパイル
           make
 
-      - name: Properly Re-sign the generated dylib
+      - name: Force Clean Ad-hoc Signature
         run: |
-          echo "=== Applying clean ad-hoc signature with ldid ==="
-          # 生成されたすべてのdylibに対して、余計なオプションを排除して純粋なアドホック署名を付与
+          echo "=== Re-signing dylib with strict ad-hoc flag ==="
+          # 生成されたすべてのdylibに対して、最新のldidでクリーンなアドホック署名を強制適用
           find . -name "*.dylib" -exec ldid -S {} \;
           
-          # 署名が正しく付与されたか確認
+          # 署名の検証
           find . -name "*.dylib" -exec ldid -v {} \;
 
       - name: Prepare dylib Artifact
