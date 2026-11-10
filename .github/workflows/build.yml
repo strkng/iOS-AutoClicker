@@ -34,10 +34,14 @@ jobs:
         run: |
           make package
 
+      - name: Re-sign dylib properly with ldid
+        run: |
+          # コード署名エラー（code signature invalid）を防ぐため、生成されたdylibにAd-hoc署名を正しく再適用する
+          find . -name "*.dylib" -exec ldid -S {} \;
+
       - name: Prepare dylib Artifact
         run: |
           mkdir -p output_files
-          # ビルドされたdylibとplistをわかりやすい出力フォルダに集約する
           find . -name "*.dylib" -exec cp {} output_files/ \;
           find . -name "*.plist" -exec cp {} output_files/ \;
           echo "=== Collected files ==="
