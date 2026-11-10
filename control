@@ -1,0 +1,9 @@
+Package: com.example.autoclicker
+Name: AutoClicker
+Depends: mobilesubstrate
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: iOS AutoClicker dylib with JSON support
+Maintainer: YourName
+Author: YourName
+Section: Tweaks
