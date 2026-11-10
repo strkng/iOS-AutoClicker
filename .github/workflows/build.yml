@@ -1,4 +1,4 @@
-name: Build Theos Project
+name: Build AutoClicker
 
 on:
   push:
@@ -8,17 +8,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: rabisense/theos:latest # または使用しているtheos環境のコンテナ
+      image: rabisense/theos:latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Build Project
-        run: make package
+      - name: Build with Theos
+        run: |
+          make package
 
-      - name: Upload Artifact
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: AutoClicker-Framework
-          path: packages/*.deb # またはビルドされた.framework / .ipa の出力先パス
+          name: AutoClicker-Package
+          path: packages/*.deb
