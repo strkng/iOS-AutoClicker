@@ -12,12 +12,17 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Theos
         run: |
           git clone --recursive https://github.com/theos/theos.git ~/theos
-          git clone https://github.com/theos/sdks.git ~/theos/sdks
+          
+          if [ ! -d "$HOME/theos/sdks" ]; then
+            git clone https://github.com/theos/sdks.git ~/theos/sdks
+          else
+            echo "SDKs directory already exists, skipping clone."
+          fi
 
       - name: Build Tweak (.dylib)
         env:
@@ -26,7 +31,7 @@ jobs:
           make package
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4   # ← ここを v4 に変更します
+        uses: actions/upload-artifact@v4
         with:
           name: autoclicker-dylib
           path: .theos/_/*.dylib
