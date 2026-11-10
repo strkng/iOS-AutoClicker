@@ -24,6 +24,10 @@ jobs:
             echo "SDKs directory already exists, skipping clone."
           fi
 
+      - name: Install ldid
+        run: |
+          brew install ldid
+
       - name: Build Tweak (.dylib)
         env:
           THEOS: /Users/runner/theos
