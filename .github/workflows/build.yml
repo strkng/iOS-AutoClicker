@@ -34,8 +34,18 @@ jobs:
         run: |
           make package
 
+      - name: Debug Output Files (File Search)
+        run: |
+          echo "=== Searching for dylib files ==="
+          find . -name "*.dylib"
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: autoclicker-dylib
-          path: .theos/_/*.dylib
+          path: |
+            *.deb
+            .theos/**/*.dylib
+            packages/*.deb
+            obj/*.dylib
+          if-no-files-found: error
