@@ -1,58 +1,24 @@
-name: Build iOS dylib
+name: Build Theos Project
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
+    container:
+      image: rabisense/theos:latest # または使用しているtheos環境のコンテナ
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Theos
-        run: |
-          git clone --recursive https://github.com/theos/theos.git ~/theos
-          
-          if [ ! -d "$HOME/theos/sdks" ]; then
-            git clone https://github.com/theos/sdks.git ~/theos/sdks
-          else
-            echo "SDKs directory already exists, skipping clone."
-          fi
-
-      - name: Install ldid
-        run: |
-          brew install ldid
-
-      - name: Build Tweak (Single Architecture)
-        env:
-          THEOS: /Users/runner/theos
-        run: |
-          make
-
-      - name: Force Clean Ad-hoc Signature with SHA-256
-        run: |
-          echo "=== Re-signing dylib with strict SHA-256 ad-hoc signature ==="
-          # SHA-256ハッシュを指定してldidで厳格に再署名を行う
-          find . -name "*.dylib" -exec ldid -Hsha256 -S {} \;
-          
-          # 検証
-          find . -name "*.dylib" -exec ldid -v {} \;
-
-      - name: Prepare dylib Artifact
-        run: |
-          mkdir -p output_files
-          find . -name "*.dylib" -exec cp {} output_files/ \;
-          find . -name "*.plist" -exec cp {} output_files/ \;
-          echo "=== Collected files ==="
-          ls -la output_files/
+      - name: Build Project
+        run: make package
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: autoclicker-dylib
-          path: output_files/*
+          name: AutoClicker-Framework
+          path: packages/*.deb # またはビルドされた.framework / .ipa の出力先パス
