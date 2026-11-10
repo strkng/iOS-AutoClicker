@@ -7,6 +7,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # ジョブ全体で THEOS のパスを固定する
+    env:
+      THEOS: ${{ github.workspace }}/theos
 
     steps:
       - name: Checkout Repository
@@ -19,13 +23,11 @@ jobs:
 
       - name: Setup Theos
         run: |
-          git clone --recursive https://github.com/theos/theos.git ~/theos
+          git clone --recursive https://github.com/theos/theos.git $THEOS
 
       - name: Build Project
         run: |
-          export THEOS=~/theos
           make package
-        # ← 同じブロック内に置くことで、THEOS変数が確実に引き継がれます
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
