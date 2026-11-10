@@ -28,16 +28,21 @@ jobs:
         run: |
           brew install ldid
 
-      - name: Build Tweak (.dylib)
+      - name: Build Tweak (Compile only)
         env:
           THEOS: /Users/runner/theos
         run: |
-          make package
+          # パッケージ化(make package)ではなく、コンパイルのみ(make)を実行して余計な自動署名を避ける
+          make
 
-      - name: Re-sign dylib properly with ldid
+      - name: Properly Re-sign the generated dylib
         run: |
-          # コード署名エラー（code signature invalid）を防ぐため、生成されたdylibにAd-hoc署名を正しく再適用する
+          echo "=== Applying clean ad-hoc signature with ldid ==="
+          # 生成されたすべてのdylibに対して、余計なオプションを排除して純粋なアドホック署名を付与
           find . -name "*.dylib" -exec ldid -S {} \;
+          
+          # 署名が正しく付与されたか確認
+          find . -name "*.dylib" -exec ldid -v {} \;
 
       - name: Prepare dylib Artifact
         run: |
