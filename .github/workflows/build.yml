@@ -25,7 +25,7 @@ jobs:
         run: |
           export THEOS=~/theos
           make package
-        # ← 同じブロック内に記述することで、exportしたパスが確実にmakeに渡ります
+        # ← 同じブロック内に置くことで、THEOS変数が確実に引き継がれます
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
