@@ -1,26 +1,31 @@
-name: Build iOS Autoclicker dylib
+name: Build iOS dylib
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: macos-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Setup Theos
+      - name: Set up Theos
         run: |
           git clone --recursive https://github.com/theos/theos.git ~/theos
-          
-      - name: Build dylib
+          # 必要に応じてTheosのSDK（iPhoneOS SDK）を設定
+          git clone https://github.com/theos/sdks.git ~/theos/sdks
+
+      - name: Build Tweak (.dylib)
         env:
-          THEOS: ~/theos
+          THEOS: /Users/runner/theos
         run: |
           make package
-          
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
