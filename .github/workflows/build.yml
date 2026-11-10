@@ -19,13 +19,13 @@ jobs:
 
       - name: Setup Theos
         run: |
-          export THEOS=~/theos
-          git clone --recursive https://github.com/theos/theos.git $THEOS
+          git clone --recursive https://github.com/theos/theos.git ~/theos
 
       - name: Build Project
         run: |
           export THEOS=~/theos
           make package
+        # 同一の run ブロック内に記述することで、exportしたTHEOSが必ず make に引き継がれます
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
