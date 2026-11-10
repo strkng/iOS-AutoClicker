@@ -28,20 +28,19 @@ jobs:
         run: |
           brew install ldid
 
-      - name: Build Tweak (Compile only)
+      - name: Build Tweak (Single Architecture)
         env:
           THEOS: /Users/runner/theos
         run: |
-          # パッケージ化(make package)を行わず、Makefileで指定したarm64のみでコンパイル
           make
 
-      - name: Force Clean Ad-hoc Signature
+      - name: Force Clean Ad-hoc Signature with SHA-256
         run: |
-          echo "=== Re-signing dylib with strict ad-hoc flag ==="
-          # 生成されたすべてのdylibに対して、最新のldidでクリーンなアドホック署名を強制適用
-          find . -name "*.dylib" -exec ldid -S {} \;
+          echo "=== Re-signing dylib with strict SHA-256 ad-hoc signature ==="
+          # SHA-256ハッシュを指定してldidで厳格に再署名を行う
+          find . -name "*.dylib" -exec ldid -Hsha256 -S {} \;
           
-          # 署名の検証
+          # 検証
           find . -name "*.dylib" -exec ldid -v {} \;
 
       - name: Prepare dylib Artifact
